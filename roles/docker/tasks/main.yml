@@ -1,0 +1,29 @@
+----
+
+- name: Remove expire docker
+  package:
+    name: {{ item }}
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - docker-selinux
+    - docker-engine
+
+- name: Add repo
+  shell: "yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo"
+#  shell: "https://download.docker.com/linux/centos/docker-ce.repo"
+  when: (ansible_distribution == 'CentOS') or (ansible_distribution == 'RedHat')
+
+- name: show docker-ce
+  yum:
+    list: docker-ce
+  register: version-list 
+  when: (ansible_distribution == 'CentOS') or (ansible_distribution == 'RedHat')
+
+- name: Install docker-ce
+  yum:
+    name: docker-ce
+    state: latest
+
+- name: Install 
