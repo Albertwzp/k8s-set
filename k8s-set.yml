@@ -1,0 +1,13 @@
+---
+
+- name: Install kube
+  hosts: k8s
+  roles:
+    - ins-kube
+  tags: ins-kube
+
+- name: Install etcd
+  hosts: k8s
+  roles:
+    - kube-etcd
+  tags: kube-etcd

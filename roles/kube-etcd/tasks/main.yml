@@ -1,0 +1,23 @@
+---
+
+- name: Generate kubeadmcfg.yaml
+  script: "../files/etcd.sh {{ k8s_group }}"
+  args:
+    chdir: /tmp
+    removes: /tmp/
+  connection: local
+
+- name: Rendering ca
+  copy:
+   src: "/tmp/{{ hostvars[inventory_hostname]['ansible_host'] }}.tar.gz"
+   dest: "/tmp/{{ hostvars[inventory_hostname]['ansible_host'] }}.tar.gz"
+
+- name: Unarchive
+  unarchive:
+    src: "/tmp/{{ hostvars[inventory_hostname]['ansible_host'] }}.tar.gz"
+    dest: /etc/kubernetes
+    remote_src: yes
+
+- name: Init etcd
+  shell: |
+    kubeadm init phase etcd local --config=/etc/kubernetes/kubeadmcfg.yaml

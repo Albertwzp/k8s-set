@@ -1,0 +1,2 @@
+#k8s_group: "{% for host in groups['k8s'] %}{% hostvars[host]['ansible_ssh_host'] %}{% endfor %}"
+k8s_group: "{% set IP_ARR=[] %}{% for host in groups['k8s'] %}{% if IP_ARR.insert(loop.index,hostvars[host]['ansible_host']) %}{% endif %}{% endfor %}{{IP_ARR|join(' ')}}"

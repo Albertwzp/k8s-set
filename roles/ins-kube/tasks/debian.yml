@@ -1,0 +1,13 @@
+---
+
+- name: Rendering list
+  template:
+    src: "kubernetes.list.yaml"
+    dest: "/etc/apt/sources.list.d/kubernetes.list"
+  when: (hostvars[inventory_hostname].ansible_distribution == 'Ubuntu') or (hostvars[inventory_hostname].ansible_distribution == 'Debian')
+
+- name: Install kube
+  shell: |
+    apt-get update
+    apt-get install -y kubelet kubeadm kubectl
+    apt-mark hold kubelet kubeadm kubectl

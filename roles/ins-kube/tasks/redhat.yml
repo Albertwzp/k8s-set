@@ -1,0 +1,14 @@
+---
+
+- name: Rendering repo
+  template:
+    src: "kubernetes.repo.yaml"
+    dest: "/etc/yum.repos.d/kubernetes.repo"
+  when: (hostvars[inventory_hostname].ansible_distribution == 'RedHat') or (hostvars[inventory_hostname].ansible_distribution == 'CentOS')
+
+- name: Install kube
+  shell: |
+    setenforce 0
+    sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+    yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+    systemctl enable --now kubelet
