@@ -1,0 +1,59 @@
+---
+
+- name: Get istio
+  shell: |
+    curl -L https://istio.io/downloadIstio | sh -
+
+- name: Search istio
+  shell: "find . -name istio* |xargs basename"
+  register: istio
+
+- name: Mv istio to opt
+  shell: |
+    mv {{ istio }} /opt/
+    cp /opt/{{ istio }}/tools/istioctl.bash ~/istioctl.bash
+  ignore_errors: true
+
+- name: Add profile
+  lineinfile:
+    path: ~/.barchrc
+    insertbefore: EOF
+    line: "{{ item }}"
+  with_items:
+    - "export PATH=/opt/{{ istio }}/bin:$PATH"
+    - "source ~/istioctl.bash"
+
+- name: Init istio-system
+  shell: |
+    istioctl manifest apply --set profile={{ item }}
+    istioctl proxy-status
+  with_items:
+    - "demo"
+#    - "default"
+#    - "minimal"
+#    - "sds"
+
+- name: Istio status
+  shell: "istioctl proxy-config {{ item }} {{ pod_name }}.{{ ns }}"
+  with_items:
+    - "cluster"
+    - "bootstrap"
+    - "listener"
+    - "route"
+    - "endpoints"
+
+- name: Istio describe
+  shell: "istioctl experimental describe {{ pod_name }}.{{ ns }}"
+  
+- name: Istio analyze cls
+  shell: "istioctl analyze -n {{ ns }}"
+  
+- name: Istio k8s yaml
+  shell: "istioctl analyze --use-kube=false *.yaml"
+  
+- name: Controlz
+  shell: "istioctl dashboard controlz {{ istio_pod }}"
+
+- name: Uninstall istio
+  shell: "istioctl manifest generate --set profile=demo | kubectl delete -f -"
+  tags: unistall

@@ -11,3 +11,8 @@
   roles:
     - kube-etcd
   tags: kube-etcd
+
+- name: Init First
+  host: k8s-master[0]
+  roles:
+    - master-init

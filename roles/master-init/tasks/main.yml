@@ -1,0 +1,10 @@
+---
+
+- name: Reset conf
+  shell: |
+    sudo kubeadm reset -f
+
+- name: Init
+  shell: |
+    sudo kubeadm init --kubernetes-version {{ K8S_VERSION }} --control-plane-endpoint "{{ LOAD_BALANCER_VIP }}:{{ LOAD_BALANCER_PORT }}" --upload-certs
+  register: 
