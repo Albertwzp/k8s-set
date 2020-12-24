@@ -1,13 +1,40 @@
 ---
 
+- hosts: all
+  gather_facts: false
+  tags: always
+  tasks:
+    - name: "Set up proxy environment"
+      set_fact:
+        proxy_env:
+          http_proxy: "{{ http_proxy | default ('') }}"
+          HTTP_PROXY: "{{ http_proxy | default ('') }}"
+          https_proxy: "{{ https_proxy | default ('') }}"
+          HTTPS_PROXY: "{{ https_proxy | default ('') }}"
+          no_proxy: "{{ no_proxy | default ('') }}"
+          NO_PROXY: "{{ no_proxy | default ('') }}"
+      no_log: true
+
+- name: Proxy set
+  hosts: k8s
+  roles:
+    - set-proxy
+  tags: proxy
+
 - name: Install docker
   hosts: k8s
+  environment:
+    http_proxy: "{{ PROXY }}"
+    https_proxy: "{{ PROXY }}"
   roles:
     - docker
   tags: ins-docker
 
 - name: Install kube
   hosts: k8s
+  environment:
+    http_proxy: "{{ PROXY }}"
+    https_proxy: "{{ PROXY }}"
   roles:
     - ins-kube
   tags: ins-kube
@@ -29,4 +56,4 @@
         state: started
     - name: Init k8s master
       shell: "sudo kubeadm init --kubernetes-version {{ K8S_VERSION }} --control-plane-endpoint {{ LOAD_BALANCER_VIP }}:{{ LOAD_BALANCER_PORT }} --upload-certs"
-
+  tags: adm-init

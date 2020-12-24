@@ -1,0 +1,7 @@
+---
+
+- name: Set Yum proxy
+  lineinfile:
+    path: /etc/yum.conf
+    line: "proxy={{ PROXY }}"
+    insertbefore: EOF

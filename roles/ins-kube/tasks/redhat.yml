@@ -4,7 +4,7 @@
   template:
     src: "kubernetes.repo.yaml"
     dest: "/etc/yum.repos.d/kubernetes.repo"
-  when: (hostvars[inventory_hostname].ansible_distribution == 'RedHat') or (hostvars[inventory_hostname].ansible_distribution == 'CentOS')
+#  when: (hostvars[inventory_hostname].ansible_distribution == 'RedHat') or (hostvars[inventory_hostname].ansible_distribution == 'CentOS')
 
 - name: Install kube
   shell: |

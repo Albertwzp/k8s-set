@@ -4,7 +4,7 @@
   when: (hostvars[inventory_hostname].ansible_distribution == 'Ubuntu') or (hostvars[inventory_hostname].ansible_distribution == 'Debian')
 
 - include: redhat.yml
-  when: (hostvars[inventory_hostname].ansible_distribution == 'RedHat') or (hostvars[inventory_hostname].ansible_distribution == 'CentOS')
+#  when: (hostvars[inventory_hostname].ansible_distribution == 'RedHat') or (hostvars[inventory_hostname].ansible_distribution == 'CentOS')
 
 - include: crio.yml
   when: enable_crio
