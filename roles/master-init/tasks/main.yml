@@ -6,5 +6,5 @@
 
 - name: Init
   shell: |
-    sudo kubeadm init --kubernetes-version {{ K8S_VERSION }} --control-plane-endpoint "{{ LOAD_BALANCER_VIP }}:{{ LOAD_BALANCER_PORT }}" --upload-certs
+    sudo kubeadm init --kubernetes-version {{ K8S_VERSION }} --control-plane-endpoint "{{ LOAD_BALANCER_VIP }}:{{ LOAD_BALANCER_PORT }}" --upload-certs --pod-network-cidr={{ POD_CIDR}}
   register: 
